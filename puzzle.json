@@ -5,7 +5,8 @@
     "level": 1,
     "difficulty": "Court Scholar",
     "size": { "rows": 18, "cols": 18 },
-    "bonusXP": 20
+    "bonusXP": 20,
+    "maxXP": 100
   },
   "clues": {
     "across": [

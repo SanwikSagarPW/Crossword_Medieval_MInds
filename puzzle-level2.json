@@ -5,7 +5,8 @@
     "level": 2,
     "difficulty": "Sultan's Challenge",
     "size": { "rows": 18, "cols": 18 },
-    "bonusXP": 30
+    "bonusXP": 30,
+    "maxXP": 100
   },
   "clues": {
     "across": [

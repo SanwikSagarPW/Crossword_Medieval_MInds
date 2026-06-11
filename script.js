@@ -491,17 +491,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (allCorrect) {
             const timeTaken = Date.now() - levelStartTime;
             
-            // Calculate bonuses
-            let bonusXP = 0;
-            const hintsUsed = Object.values(wordAttempts).filter(attempts => attempts >= 2).length;
-            if (hintsUsed === 0) {
-                bonusXP += currentPuzzleData.metadata.bonusXP || 20; // No hints bonus
-            }
-            
-            const totalEarnedXP = earnedXP + bonusXP;
+            // XP: 100 per level, scaled by accuracy (max 200 total)
+            const levelMaxXP = 100;
+            const accuracyPercent = parseFloat(accuracy);
+            const totalEarnedXP = Math.round(levelMaxXP * (accuracyPercent / 100));
             totalXP += totalEarnedXP;
             
-            // Mark level as completed
+            // Mark level as completed and always unlock level 2
             if (currentLevel === 1) {
                 level1Completed = true;
                 level2Btn.disabled = false;
@@ -515,8 +511,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             console.log('[Analytics] Puzzle completed!', {
                 timeTaken: (timeTaken / 1000).toFixed(2) + 's',
-                earnedXP: earnedXP,
-                bonusXP: bonusXP,
                 totalEarnedXP: totalEarnedXP,
                 totalXP: totalXP
             });
@@ -529,6 +523,15 @@ document.addEventListener('DOMContentLoaded', () => {
             // Update live stats
             currentAccuracyValue.textContent = `${accuracy}%`;
             attemptsValue.textContent = checkAttempts;
+            
+            // Unlock level 2 after first check of level 1 regardless of correctness
+            if (currentLevel === 1 && !level1Completed) {
+                level1Completed = true;
+                level2Btn.disabled = false;
+                level2Btn.textContent = 'Level 2';
+                saveProgress();
+            }
+            
             alert(`Not quite right! Keep trying. 💚\n\nCorrect: ${correctCount} | Incorrect: ${incorrectCount} | Empty: ${emptyCount}`);
         }
     }
