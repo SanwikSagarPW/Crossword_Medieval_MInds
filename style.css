@@ -295,7 +295,3 @@ li.highlighted { background-color: rgba(3,218,198,0.12); color: var(--accent-col
     .controls { flex-direction: column; gap: 8px; }
     #check-btn, #clear-btn, .btn-primary, .btn-secondary { max-width: 100%; }
 }
-    .completion-stats { gap: 12px; }
-    .controls { flex-direction: column; }
-    #check-btn, #clear-btn, .btn-primary, .btn-secondary { max-width: 100%; }
-}
