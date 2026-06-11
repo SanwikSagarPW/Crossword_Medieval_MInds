@@ -1,32 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-        // --- RESPONSIVE GRID SCALING ---
-        function scaleGridToFit() {
-            const grid = document.getElementById('crossword-grid');
-            const container = document.querySelector('.crossword-container');
-            if (!grid || !container) return;
-            const rows = parseInt(grid.style.getPropertyValue('--grid-rows')) || 10;
-            const cols = parseInt(grid.style.getPropertyValue('--grid-cols')) || 10;
-            // Get available width/height
-            const containerRect = container.getBoundingClientRect();
-            // Leave some margin for clues/controls
-            const maxGridWidth = containerRect.width;
-            const maxGridHeight = containerRect.height;
-            // Calculate cell size to fit both dimensions
-            const cellSize = Math.floor(Math.min(maxGridWidth / cols, maxGridHeight / rows));
-            // Set CSS variable for cell size
-            grid.style.setProperty('--cell-size', cellSize + 'px');
-            // Optionally scale font size
-            grid.querySelectorAll('.cell-input').forEach(input => {
-                input.style.fontSize = Math.max(0.7 * cellSize, 14) + 'px';
-            });
-        }
-
-        // Observe resizing
-        const resizeObserver = new ResizeObserver(() => {
-            scaleGridToFit();
-        });
-        const crosswordContainer = document.querySelector('.crossword-container');
-        if (crosswordContainer) resizeObserver.observe(crosswordContainer);
     // DOM Elements
     const gridElement = document.getElementById('crossword-grid');
     const acrossCluesElement = document.getElementById('across-clues');
@@ -203,8 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 cell.className = 'grid-cell';
                 cell.dataset.row = r;
                 cell.dataset.col = c;
-                cell.style.width = 'var(--cell-size, 32px)';
-                cell.style.height = 'var(--cell-size, 32px)';
                 const devCoords = document.createElement('div');
                 devCoords.className = 'dev-coords';
                 devCoords.textContent = `${r},${c}`;
@@ -237,8 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 gridElement.appendChild(cell);
             }
         }
-        // After rendering, scale grid
-        setTimeout(scaleGridToFit, 0);
     }
 
     function renderClues(clueList, listElement, direction) {
