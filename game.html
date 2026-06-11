@@ -93,6 +93,32 @@
         </div>
     </div>
 
+    <!-- END GAME SCREEN -->
+    <div id="endgame-overlay" class="hidden">
+        <div class="success-box endgame-box">
+            <h2 class="endgame-title">🏆 Game Complete! 🏆</h2>
+            <p class="endgame-subtitle">You have conquered Medieval Minds!</p>
+            <div class="endgame-xp">
+                <span class="endgame-xp-label">Total XP Earned</span>
+                <span class="endgame-xp-value" id="endgame-total-xp">0</span>
+                <span class="endgame-xp-max">/ 200</span>
+            </div>
+            <div class="endgame-breakdown">
+                <div class="endgame-level-row">
+                    <span>Level 1</span>
+                    <span id="endgame-l1-xp">0</span><span> / 100 XP</span>
+                </div>
+                <div class="endgame-level-row">
+                    <span>Level 2</span>
+                    <span id="endgame-l2-xp">0</span><span> / 100 XP</span>
+                </div>
+            </div>
+            <div class="completion-actions">
+                <button class="replay-btn" id="endgame-replay-btn">↻ Play Again</button>
+            </div>
+        </div>
+    </div>
+
     <div id="admin-panel" class="hidden">
         <h3>🔧 Admin Panel</h3>
         <p>Debug mode activated!</p>

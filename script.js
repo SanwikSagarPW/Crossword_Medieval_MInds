@@ -35,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let totalXP = 0;
     let level1Completed = false;
     let level2Completed = false;
+    let level1XP = 0;
+    let level2XP = 0;
     let wordAttempts = {}; // Track attempts per word
 
     // Analytics Setup
@@ -52,6 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (savedProgress) {
             const progress = JSON.parse(savedProgress);
             totalXP = progress.totalXP || 0;
+            level1XP = progress.level1XP || 0;
+            level2XP = progress.level2XP || 0;
             level1Completed = progress.level1Completed || false;
             level2Completed = progress.level2Completed || false;
             currentLevel = progress.currentLevel || 1;
@@ -99,6 +103,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function saveProgress() {
         const progress = {
             totalXP,
+            level1XP,
+            level2XP,
             level1Completed,
             level2Completed,
             currentLevel
@@ -497,6 +503,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const totalEarnedXP = Math.round(levelMaxXP * (accuracyPercent / 100));
             totalXP += totalEarnedXP;
             
+            // Track per-level XP
+            if (currentLevel === 1) level1XP = totalEarnedXP;
+            else if (currentLevel === 2) level2XP = totalEarnedXP;
+            
             // Mark level as completed and always unlock level 2
             if (currentLevel === 1) {
                 level1Completed = true;
@@ -562,15 +572,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentLevel === 1 && !level2Completed) {
             completionMessage.textContent = '🎉 Level 1 Complete! 🎉';
             nextLevelBtn.classList.remove('hidden');
+            successOverlay.classList.remove('hidden');
         } else if (currentLevel === 2) {
-            completionMessage.textContent = '🏆 All Levels Complete! 🏆';
-            nextLevelBtn.classList.add('hidden');
+            // Show end game screen instead of success overlay
+            showEndgameScreen();
         } else {
             completionMessage.textContent = '🎉 Level Complete! 🎉';
             nextLevelBtn.classList.add('hidden');
+            successOverlay.classList.remove('hidden');
         }
-        
-        successOverlay.classList.remove('hidden');
+    }
+
+    function showEndgameScreen() {
+        document.getElementById('endgame-total-xp').textContent = totalXP;
+        document.getElementById('endgame-l1-xp').textContent = level1XP;
+        document.getElementById('endgame-l2-xp').textContent = level2XP;
+        document.getElementById('endgame-overlay').classList.remove('hidden');
     }
 
     // --- SECRET CODES & EVENT LISTENERS ---
@@ -645,6 +662,22 @@ document.addEventListener('DOMContentLoaded', () => {
     replayBtn.addEventListener('click', () => {
         loadLevel(currentLevel);
         successOverlay.classList.add('hidden');
+    });
+
+    document.getElementById('endgame-replay-btn').addEventListener('click', () => {
+        // Reset all progress
+        totalXP = 0;
+        level1XP = 0;
+        level2XP = 0;
+        level1Completed = false;
+        level2Completed = false;
+        currentLevel = 1;
+        saveProgress();
+        updateXPDisplay();
+        unlockLevelsBasedOnProgress();
+        updateLevelButtons();
+        document.getElementById('endgame-overlay').classList.add('hidden');
+        loadLevel(1);
     });
     
     // Track incomplete sessions when user leaves
