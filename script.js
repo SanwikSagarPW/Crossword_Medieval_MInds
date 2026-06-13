@@ -542,7 +542,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 saveProgress();
             }
             
-            alert(`Not quite right! Keep trying. 💚\n\nCorrect: ${correctCount} | Incorrect: ${incorrectCount} | Empty: ${emptyCount}`);
+            // Send analytics on every submit
+            sendSubmitAnalytics(accuracy, earnedXP);
+            
+            // Show submit modal instead of alert
+            showSubmitModal(correctCount, incorrectCount, emptyCount, accuracy, earnedXP);
         }
     }
 
@@ -583,7 +587,67 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function sendSubmitAnalytics(accuracy, xpEarned) {
+        const timeTaken = Date.now() - levelStartTime;
+        const payload = {
+            event: 'level_submit',
+            gameId: 'medieval_minds_crossword',
+            level: currentLevel,
+            attemptCount: checkAttempts,
+            accuracyPercent: parseFloat(accuracy),
+            xpEarned: xpEarned,
+            timeTakenMs: timeTaken,
+            timestamp: new Date().toISOString()
+        };
+        try {
+            if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
+                window.ReactNativeWebView.postMessage(JSON.stringify(payload));
+            }
+        } catch (e) { /* ignore */ }
+        try {
+            window.parent.postMessage(payload, '*');
+        } catch (e) { /* ignore */ }
+        analytics.submitReport();
+    }
+
+    function showSubmitModal(correct, incorrect, empty, accuracy, xpEarned) {
+        const modal = document.getElementById('submit-modal');
+        document.getElementById('modal-correct').textContent = correct;
+        document.getElementById('modal-incorrect').textContent = incorrect;
+        document.getElementById('modal-empty').textContent = empty;
+        document.getElementById('modal-accuracy').textContent = accuracy + '%';
+        document.getElementById('modal-xp').textContent = xpEarned;
+        
+        const nextBtn = document.getElementById('modal-next-btn');
+        // Show next level button if there's a next level available
+        if (currentLevel === 1 && !level2Completed) {
+            nextBtn.classList.remove('hidden');
+        } else {
+            nextBtn.classList.add('hidden');
+        }
+        modal.classList.remove('hidden');
+    }
+
     function showEndgameScreen() {
+        // Send final analytics payload
+        const finalPayload = {
+            event: 'game_completed',
+            gameId: 'medieval_minds_crossword',
+            game_completed: true,
+            final_total_xp: totalXP,
+            per_level_xp: { level1: level1XP, level2: level2XP },
+            timestamp: new Date().toISOString()
+        };
+        try {
+            if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
+                window.ReactNativeWebView.postMessage(JSON.stringify(finalPayload));
+            }
+        } catch (e) { /* ignore */ }
+        try {
+            window.parent.postMessage(finalPayload, '*');
+        } catch (e) { /* ignore */ }
+        analytics.submitReport();
+
         document.getElementById('endgame-total-xp').textContent = totalXP;
         document.getElementById('endgame-l1-xp').textContent = level1XP;
         document.getElementById('endgame-l2-xp').textContent = level2XP;
@@ -662,6 +726,16 @@ document.addEventListener('DOMContentLoaded', () => {
     replayBtn.addEventListener('click', () => {
         loadLevel(currentLevel);
         successOverlay.classList.add('hidden');
+    });
+
+    // Submit modal buttons
+    document.getElementById('modal-retry-btn').addEventListener('click', () => {
+        document.getElementById('submit-modal').classList.add('hidden');
+    });
+
+    document.getElementById('modal-next-btn').addEventListener('click', () => {
+        document.getElementById('submit-modal').classList.add('hidden');
+        loadLevel(currentLevel + 1);
     });
 
     document.getElementById('endgame-replay-btn').addEventListener('click', () => {

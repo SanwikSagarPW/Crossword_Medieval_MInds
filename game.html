@@ -119,6 +119,44 @@
         </div>
     </div>
 
+    <!-- SUBMIT MODAL (shown when puzzle is not fully correct) -->
+    <div id="submit-modal" class="hidden">
+        <div class="success-box submit-modal-box">
+            <h2>📊 Puzzle Progress</h2>
+            <div class="completion-stats">
+                <div class="stat-item">
+                    <span class="stat-icon">✅</span>
+                    <span class="stat-label">Correct</span>
+                    <span class="stat-number" id="modal-correct">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">❌</span>
+                    <span class="stat-label">Incorrect</span>
+                    <span class="stat-number" id="modal-incorrect">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">⬜</span>
+                    <span class="stat-label">Empty</span>
+                    <span class="stat-number" id="modal-empty">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">🎯</span>
+                    <span class="stat-label">Accuracy</span>
+                    <span class="stat-number" id="modal-accuracy">0%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">⭐</span>
+                    <span class="stat-label">XP Earned</span>
+                    <span class="stat-number" id="modal-xp">0</span>
+                </div>
+            </div>
+            <div class="completion-actions">
+                <button class="next-level-btn hidden" id="modal-next-btn">Next Level →</button>
+                <button class="replay-btn" id="modal-retry-btn">↻ Retry</button>
+            </div>
+        </div>
+    </div>
+
     <div id="admin-panel" class="hidden">
         <h3>🔧 Admin Panel</h3>
         <p>Debug mode activated!</p>
