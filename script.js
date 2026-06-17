@@ -542,7 +542,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 saveProgress();
             }
             
-            // Send analytics on every submit
+            // Send mid-game level_submit event
             sendSubmitAnalytics(accuracy, earnedXP);
             
             // Show submit modal instead of alert
@@ -593,10 +593,10 @@ document.addEventListener('DOMContentLoaded', () => {
             event: 'level_submit',
             gameId: 'medieval_minds_crossword',
             level: currentLevel,
-            attemptCount: checkAttempts,
-            accuracyPercent: parseFloat(accuracy),
+            attempt: checkAttempts,
+            accuracy: parseFloat(accuracy),
             xpEarned: xpEarned,
-            timeTakenMs: timeTaken,
+            timeTaken: timeTaken,
             timestamp: new Date().toISOString()
         };
         try {
@@ -635,7 +635,7 @@ document.addEventListener('DOMContentLoaded', () => {
             gameId: 'medieval_minds_crossword',
             game_completed: true,
             final_total_xp: totalXP,
-            per_level_xp: { level1: level1XP, level2: level2XP },
+            per_level_xp: [level1XP, level2XP],
             timestamp: new Date().toISOString()
         };
         try {
